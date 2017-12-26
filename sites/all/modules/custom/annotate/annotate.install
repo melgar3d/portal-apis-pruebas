@@ -1,0 +1,49 @@
+<?php
+
+/**
+* Implementa hook_install()
+*/
+
+function annotate_install(){
+	// comprobar si existe el campo annotation 
+	$field = field_info_field('annotation');
+	
+	// si no existe, lo creamos
+	if (empty($field)){
+		$field = array(
+			'field_name' => 'annotation',
+			'type' => 'text_with_summary',
+			'entity_types' => array('node'),
+			'translatable' => TRUE,
+		);
+		$field = field_create_field($field);
+	}	
+}
+
+/**
+* Implementa hook_uninstall()
+*/
+
+function annotate_uninstall(){
+	
+	watchdog("Annotate Module", "Uninstalling module and deleting fields");
+	
+	$types = node_type_get_types();
+	
+	foreach($types as $type){
+		annotate_delete_annotation($type);
+	}
+	
+	$field = field_info_field('annotation');
+	
+	if($field){
+		field_delete_field('annotation');
+	}
+}	
+
+function annotate_delete_annotation($type){
+	$instance = field_info_instance('node', 'annotation', $type->type);
+	if($instance){
+		field_delete_instance($instance, false);
+	}	
+}
