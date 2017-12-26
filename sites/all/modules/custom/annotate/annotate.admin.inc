@@ -30,6 +30,26 @@ function annotate_admin_settings() {
 		'#description' => t('A text field will be avaliable on these content types to make user-specific notes.'),
 	);
 	
+	$form['annotate_deletion'] = array(
+		'#type' => 'radios',
+		'#title' => t('Annotations will be deleted'),
+		'#description' => t('Select a method for deleting annotations.'),
+		'#options' => array(
+			t('Never'),
+			t('Randomly'),
+			t('After 30 days')
+		),
+		'#default_values' => variable_get('annotate_deletion', 0)  // Never de forma predeterminada
+	);
+	
+	$form['annotate_limit_per_node'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Annotations per node'),
+		'#description' => t('Enter the maximum number of anotations allowed per node (0 for no limit).'),
+		'#default_value' => variable_get('annotate_limit_per_node', 1),
+		'#size' => 3
+	);	
+	
 	$form['#submit'][] = 'annotate_admin_settings_submit';
 	return system_settings_form($form, TRUE);
 }
